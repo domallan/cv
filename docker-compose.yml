@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres
+    ports: ["5433:5432"]
+    restart: always
+    networks:
+      - net-backend
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    user: "postgres:postgres"
+    volumes:
+      - ./scripts/db:/scripts/db
+    healthcheck:
+      test: “CMD-SHELL pg_isready”
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+networks:
+  net-backend: {}

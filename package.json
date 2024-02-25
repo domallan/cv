@@ -11,7 +11,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:init": "./scripts/db/initdb.sh",
+    "db:remove": "./scripts/db/deletedb.sh"
   },
   "dependencies": {
     "react": "^18",
