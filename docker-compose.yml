@@ -1,20 +1,37 @@
 services:
   db:
     image: postgres
-    ports: ["5433:5432"]
     restart: always
     networks:
       - net-backend
-    environment:
-      - POSTGRES_PASSWORD=postgres
+    env_file:
+        - ./.env
     user: "postgres:postgres"
     volumes:
       - ./scripts/db:/scripts/db
+    ports: 
+      - 5432:5432
     healthcheck:
       test: “CMD-SHELL pg_isready”
       interval: 1s
       timeout: 5s
       retries: 10
+
+  graphql:
+    container_name: graphql
+    image: graphql
+    restart: always
+    build:
+        context: ./graphql
+    env_file:
+        - ./.env
+    depends_on:
+        - db
+    networks:
+        - net-backend
+    ports:
+        - 5433:5433
+    command: ["--connection", "${DATABASE_URL}", "--port", "5433", "--enhance-graphiql", "--schema", "${DATABASE_SCHEMA}", "--append-plugins", "postgraphile-plugin-connection-filter"]
 
 networks:
   net-backend: {}
